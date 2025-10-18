@@ -1,7 +1,12 @@
 package com.mosprom.hr.app.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class User {
@@ -18,7 +23,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String fullName;
-    private boolean verified;
+    private String userName;
 }
 

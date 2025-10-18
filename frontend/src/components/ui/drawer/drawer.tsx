@@ -101,36 +101,40 @@ export const Drawer: React.FC<DrawerProps> = ({
   };
 
   const getTransformClasses = () => {
-    if (!isOpen) {
-      const transformMap = {
-        left: '-translate-x-full',
-        right: 'translate-x-full',
-        top: '-translate-y-full',
-        bottom: 'translate-y-full',
-      };
-      return transformMap[position];
+    if (isOpen) {
+      return 'translate-x-0 translate-y-0';
     }
-    return 'translate-x-0 translate-y-0';
+    
+    const transformMap = {
+      left: '-translate-x-full',
+      right: 'translate-x-full',
+      top: '-translate-y-full',
+      bottom: 'translate-y-full',
+    };
+    return transformMap[position];
   };
 
-  const getOverlayTransition = () => {
-    return isOpen ? 'opacity-100' : 'opacity-0';
+  const getOverlayClasses = () => {
+    return isOpen 
+      ? 'opacity-100 pointer-events-auto' 
+      : 'opacity-0 pointer-events-none';
   };
-
-  const getDrawerTransition = () => {
-    return isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95';
-  };
-
-  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div 
+      className={`
+        fixed inset-0 z-[100] h-full overflow-hidden
+        transition-all duration-300 ease-in-out 
+        ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}
+      `}
+    >
       {/* Overlay */}
       {overlay && (
         <div
           className={`
-            absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-300 ease-in-out
-            ${getOverlayTransition()}
+            absolute inset-0 bg-black bg-opacity-30 
+            transition-opacity duration-300 ease-in-out
+            ${getOverlayClasses()}
             ${overlayClassName}
           `}
           onClick={closeOnOverlayClick ? onClose : undefined}
@@ -141,29 +145,26 @@ export const Drawer: React.FC<DrawerProps> = ({
       <div
         className={`
           absolute ${getPositionClasses()} ${getSizeClasses()}
-          bg-white shadow-xl transition-all duration-300 ease-in-out
+          bg-white shadow-xl 
+          transition-transform duration-300 ease-in-out
           flex flex-col
-          ${getTransformClasses()} ${getDrawerTransition()}
+          ${getTransformClasses()}
           ${className}
         `}
       >
         {/* Header */}
         {(title || showCloseButton) && (
           <div className={`
-            flex items-center justify-between p-4 border-b border-gray-200
+            flex items-center justify-between py-4 px-6 border-b border-gray-200 h-16
             ${headerClassName}
           `}>
             {title && (
-              <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+              <h2 className="text-xl font-semibold text-rose-700">{title}</h2>
             )}
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="
-                  p-2 rounded-lg hover:bg-gray-100 
-                  transition-colors duration-200
-                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
-                "
+                className="p-2 rounded-full hover:bg-gray-50 active:bg-gray-100"
                 aria-label="Close drawer"
               >
                 <svg
